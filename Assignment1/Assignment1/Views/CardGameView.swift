@@ -9,14 +9,30 @@ import SwiftUI
 
 struct CardGameView: View {
     
-    var viewModel: EmojiMemoryGameViewModel
+    @ObservedObject var viewModel: EmojiMemoryGameViewModel
     
     var body: some View {
-        HStack {
-            ForEach(viewModel.cards) { card in
-                CardView(card: card, fontLarge: viewModel.cards.count >= 4).aspectRatio(3 / 2, contentMode: .fit)
+        
+        VStack {
+            HStack {
+                Text(viewModel.theme.title())
+                Button("New Game") {
+                    viewModel.newGame()
+                }
             }
-        }.padding()
+            
+            Grid(items: viewModel.cards) { card in
+                CardView(card: card, fontLarge: viewModel.cards.count >= 4, color: viewModel.theme.color())
+                    .onTapGesture {
+                        viewModel.choose(card)
+                    }
+                    .padding()
+            }
+            
+            Text("Score: \(viewModel.score)")
+        }
+        
+        .padding()
     }
 }
 
